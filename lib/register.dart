@@ -185,7 +185,7 @@ class _RegisterPageState extends State<RegisterPage> {
       children: [
         Container(
           height: MediaQuery.of(context).size.height * 0.06,
-          width: MediaQuery.of(context).size.width * 0.9,
+          width: MediaQuery.of(context).size.width * 0.8,
           child: ElevatedButton(
             child: Text('CREATE ACCOUNT'),
             onPressed: () {
