@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:project_login/login.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -9,6 +10,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final _formKey = GlobalKey<FormState>();
   bool _visible = false;
   bool _visibleConfirm = false;
 
@@ -16,15 +18,18 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                headerRegis(),
-                inputRegis(),
-                buttonRegis(),
-              ],
+        body: Form(
+          key: _formKey,
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  headerRegis(),
+                  inputRegis(),
+                  buttonRegis(),
+                ],
+              ),
             ),
           ),
         ),
@@ -38,7 +43,11 @@ class _RegisterPageState extends State<RegisterPage> {
         Padding(
           padding: EdgeInsets.only(right: 290, bottom: 40, top: 30),
           child: GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    (Route<dynamic> route) => false);
+              },
               child: Icon(
                 size: 40,
                 Icons.arrow_back,
@@ -69,7 +78,15 @@ class _RegisterPageState extends State<RegisterPage> {
                       primary: Colors.green,
                     )),
             child: TextFormField(
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
+              style: TextStyle(color: Colors.green),
               decoration: InputDecoration(
+                  labelStyle: TextStyle(color: Colors.black),
                   labelText: "NAME",
                   prefixIcon: Icon(Icons.person_outline),
                   fillColor: Colors.grey[50],
@@ -88,7 +105,15 @@ class _RegisterPageState extends State<RegisterPage> {
                       primary: Colors.green,
                     )),
             child: TextFormField(
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
+              style: TextStyle(color: Colors.green),
               decoration: InputDecoration(
+                  labelStyle: TextStyle(color: Colors.black),
                   labelText: "EMAIL",
                   prefixIcon: Icon(Icons.email_outlined),
                   fillColor: Colors.grey[50],
@@ -107,7 +132,17 @@ class _RegisterPageState extends State<RegisterPage> {
                       primary: Colors.green,
                     )),
             child: TextFormField(
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              style: TextStyle(color: Colors.green),
               decoration: InputDecoration(
+                  labelStyle: TextStyle(color: Colors.black),
                   labelText: "PHONE",
                   prefixIcon: Icon(Icons.phone_android),
                   fillColor: Colors.grey[50],
@@ -126,8 +161,16 @@ class _RegisterPageState extends State<RegisterPage> {
                       primary: Colors.green,
                     )),
             child: TextFormField(
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
+              style: TextStyle(color: Colors.green),
               obscureText: !_visible,
               decoration: InputDecoration(
+                  labelStyle: TextStyle(color: Colors.black),
                   labelText: "PASSWORD",
                   prefixIcon: IconButton(
                     icon: Icon(
@@ -148,15 +191,23 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(left: 30, right: 30, bottom: 30),
+          padding: EdgeInsets.only(left: 30, right: 30, bottom: 50),
           child: Theme(
             data: Theme.of(context).copyWith(
                 colorScheme: ThemeData().colorScheme.copyWith(
                       primary: Colors.green,
                     )),
             child: TextFormField(
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
+              style: TextStyle(color: Colors.green),
               obscureText: !_visibleConfirm,
               decoration: InputDecoration(
+                  labelStyle: TextStyle(color: Colors.black),
                   labelText: "CONFIRM PASSWORD",
                   prefixIcon: IconButton(
                     icon: Icon(
@@ -189,16 +240,18 @@ class _RegisterPageState extends State<RegisterPage> {
           child: ElevatedButton(
             child: Text('CREATE ACCOUNT'),
             onPressed: () {
-              Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                  (Route<dynamic> route) => false);
+              if (_formKey.currentState!.validate()) {
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    (Route<dynamic> route) => false);
+              }
             },
             style: ButtonStyle(
                 backgroundColor:
                     MaterialStateProperty.all<Color>(Colors.green)),
           ),
         ),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.03),
         Padding(
           padding: EdgeInsets.only(bottom: 30),
           child: Row(
@@ -206,7 +259,7 @@ class _RegisterPageState extends State<RegisterPage> {
             children: [
               Text(
                 "Already have account? ",
-                style: TextStyle(fontSize: 15),
+                style: TextStyle(fontSize: 13),
               ),
               GestureDetector(
                 onTap: () {
@@ -216,7 +269,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 },
                 child: Text(
                   "Login",
-                  style: TextStyle(fontSize: 15, color: Colors.green),
+                  style: TextStyle(fontSize: 13, color: Colors.green),
                 ),
               ),
             ],

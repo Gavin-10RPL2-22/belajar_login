@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_login/home.dart';
 import 'package:project_login/register.dart';
 
 class LoginPage extends StatefulWidget {
@@ -9,21 +10,27 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController _user = TextEditingController();
+  TextEditingController _pass = TextEditingController();
   bool _visible = false;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                headerLogin(),
-                inputLogin(),
-                buttonLogin(),
-              ],
+        body: Form(
+          key: _formKey,
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  headerLogin(),
+                  inputLogin(),
+                  buttonLogin(),
+                ],
+              ),
             ),
           ),
         ),
@@ -42,7 +49,19 @@ class _LoginPageState extends State<LoginPage> {
                       primary: Colors.green,
                     )),
             child: TextFormField(
+              controller: _user,
+              validator: (value) {
+                if (_user.text != "admin") {
+                  return 'Wrong Username';
+                } else if (_user.text.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
+              autofocus: true,
+              style: TextStyle(color: Colors.green),
               decoration: InputDecoration(
+                  labelStyle: TextStyle(color: Colors.black),
                   labelText: "EMAIL",
                   prefixIcon: Icon(Icons.email_outlined),
                   fillColor: Colors.grey[50],
@@ -61,8 +80,21 @@ class _LoginPageState extends State<LoginPage> {
                       primary: Colors.green,
                     )),
             child: TextFormField(
+              controller: _pass,
+              validator: (value) {
+                value = _pass.text;
+                if (value != "admin") {
+                  return 'Wrong Password';
+                } else if (value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
+              autofocus: true,
+              style: TextStyle(color: Colors.green),
               obscureText: !_visible,
               decoration: InputDecoration(
+                  labelStyle: TextStyle(color: Colors.black),
                   labelText: "PASSWORD",
                   prefixIcon: IconButton(
                     icon: Icon(
@@ -121,10 +153,16 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         Container(
           height: MediaQuery.of(context).size.height * 0.06,
-          width: MediaQuery.of(context).size.width * 0.75,
+          width: MediaQuery.of(context).size.width * 0.8,
           child: ElevatedButton(
             child: Text('LOGIN'),
-            onPressed: () {},
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                    (Route<dynamic> route) => false);
+              }
+            },
             style: ButtonStyle(
                 backgroundColor:
                     MaterialStateProperty.all<Color>(Colors.green)),
@@ -136,7 +174,7 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             Text(
               "Don't have account? ",
-              style: TextStyle(fontSize: 15),
+              style: TextStyle(fontSize: 13),
             ),
             GestureDetector(
               onTap: () {
@@ -145,7 +183,7 @@ class _LoginPageState extends State<LoginPage> {
               },
               child: Text(
                 "create a new account",
-                style: TextStyle(fontSize: 15, color: Colors.green),
+                style: TextStyle(fontSize: 13, color: Colors.green),
               ),
             ),
           ],
