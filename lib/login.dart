@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_login/home.dart';
 import 'package:project_login/register.dart';
+import 'package:email_validator/email_validator.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -14,6 +15,22 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _user = TextEditingController();
   TextEditingController _pass = TextEditingController();
   bool _visible = false;
+  FocusNode _isSelected1 = FocusNode();
+  FocusNode _isSelected2 = FocusNode();
+  bool showError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _user.addListener(() {
+      if (EmailValidator.validate(_user.text)) {
+        showError = false;
+      } else {
+        showError = true;
+      }
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,74 +60,87 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         Padding(
           padding: EdgeInsets.only(top: 50, left: 30, right: 30, bottom: 20),
-          child: Theme(
-            data: Theme.of(context).copyWith(
-                colorScheme: ThemeData().colorScheme.copyWith(
-                      primary: Colors.green,
-                    )),
-            child: TextFormField(
-              controller: _user,
-              validator: (value) {
-                if (_user.text != "admin") {
-                  return 'Wrong Username';
-                } else if (_user.text.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-              autofocus: true,
-              style: TextStyle(color: Colors.green),
-              decoration: InputDecoration(
-                  labelStyle: TextStyle(color: Colors.black),
-                  labelText: "EMAIL",
-                  prefixIcon: Icon(Icons.email_outlined),
-                  fillColor: Colors.grey[50],
-                  filled: true,
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(color: Colors.grey.shade50))),
+          child: Material(
+            elevation: _isSelected1.hasFocus ? 15 : 0,
+            shadowColor: Colors.grey[100],
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                  colorScheme: ThemeData().colorScheme.copyWith(
+                        primary: Colors.green,
+                      )),
+              child: TextFormField(
+                focusNode: _isSelected1,
+                controller: _user,
+                autofocus: true,
+                style: TextStyle(
+                    color: _isSelected1.hasFocus ? Colors.green : Colors.grey,
+                    fontWeight: FontWeight.w900),
+                onTap: () {
+                  FocusScopeNode currentFocus = FocusScope.of(context);
+                  if (!currentFocus.hasPrimaryFocus) {
+                    currentFocus.unfocus();
+                  }
+                },
+                decoration: InputDecoration(
+                    border: InputBorder.none,
+                    labelStyle: TextStyle(color: Colors.grey, fontSize: 12),
+                    labelText: "EMAIL",
+                    prefixIcon: showError
+                        ? Icon(Icons.error_outline, color: Colors.red)
+                        : Icon(Icons.email_outlined),
+                    fillColor: Colors.grey[50],
+                    filled: true,
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(color: Colors.grey.shade50))),
+              ),
             ),
           ),
         ),
         Padding(
           padding: EdgeInsets.only(left: 30, right: 30, bottom: 10),
-          child: Theme(
-            data: Theme.of(context).copyWith(
-                colorScheme: ThemeData().colorScheme.copyWith(
-                      primary: Colors.green,
-                    )),
-            child: TextFormField(
-              controller: _pass,
-              validator: (value) {
-                value = _pass.text;
-                if (value != "admin") {
-                  return 'Wrong Password';
-                } else if (value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-              autofocus: true,
-              style: TextStyle(color: Colors.green),
-              obscureText: !_visible,
-              decoration: InputDecoration(
-                  labelStyle: TextStyle(color: Colors.black),
-                  labelText: "PASSWORD",
-                  prefixIcon: IconButton(
-                    icon: Icon(
-                      _visible ? Icons.visibility : Icons.visibility_off,
+          child: Material(
+            elevation: _isSelected2.hasFocus ? 15 : 0,
+            shadowColor: Colors.grey[100],
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                  colorScheme: ThemeData().colorScheme.copyWith(
+                        primary: Colors.green,
+                      )),
+              child: TextFormField(
+                focusNode: _isSelected2,
+                controller: _pass,
+                autofocus: true,
+                style: TextStyle(
+                    color: _isSelected2.hasFocus ? Colors.green : Colors.grey,
+                    fontWeight: FontWeight.w900),
+                obscureText: !_visible,
+                decoration: InputDecoration(
+                    border: InputBorder.none,
+                    labelStyle: TextStyle(color: Colors.grey, fontSize: 12),
+                    labelText: "PASSWORD",
+                    prefixIcon: IconButton(
+                      icon: Icon(
+                        _visible ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _visible = !_visible;
+                        });
+                      },
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _visible = !_visible;
-                      });
-                    },
-                  ),
-                  fillColor: Colors.grey[50],
-                  filled: true,
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(color: Colors.grey.shade50))),
+                    fillColor: Colors.grey[50],
+                    filled: true,
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(color: Colors.grey.shade50))),
+                onTap: () {
+                  FocusScopeNode currentFocus = FocusScope.of(context);
+                  if (!currentFocus.hasPrimaryFocus) {
+                    currentFocus.unfocus();
+                  }
+                },
+              ),
             ),
           ),
         ),

@@ -1,6 +1,8 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:project_login/login.dart';
+import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -10,15 +12,37 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  TextEditingController _userReg = TextEditingController();
+  TextEditingController _passReg = TextEditingController();
+  FocusNode _isSelected1 = FocusNode();
+  FocusNode _isSelected2 = FocusNode();
+  FocusNode _isSelected3 = FocusNode();
+  FocusNode _isSelected4 = FocusNode();
+  FocusNode _isSelected5 = FocusNode();
   final _formKey = GlobalKey<FormState>();
   bool _visible = false;
   bool _visibleConfirm = false;
+  bool showErrorEmail = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _userReg.addListener(() {
+      if (EmailValidator.validate(_userReg.text)) {
+        showErrorEmail = false;
+      } else {
+        showErrorEmail = true;
+      }
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         body: Form(
+          autovalidateMode: AutovalidateMode.always,
           key: _formKey,
           child: Center(
             child: SingleChildScrollView(
@@ -49,7 +73,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     (Route<dynamic> route) => false);
               },
               child: Icon(
-                size: 40,
+                size: 30,
                 Icons.arrow_back,
                 color: Colors.green,
               )),
@@ -78,15 +102,20 @@ class _RegisterPageState extends State<RegisterPage> {
                       primary: Colors.green,
                     )),
             child: TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
+              onTap: () {
+                FocusScopeNode currentFocus = FocusScope.of(context);
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
                 }
-                return null;
               },
-              style: TextStyle(color: Colors.green),
+              focusNode: _isSelected1,
+              autofocus: true,
+              style: TextStyle(
+                  color: _isSelected1.hasFocus ? Colors.green : Colors.grey,
+                  fontWeight: FontWeight.w900),
               decoration: InputDecoration(
-                  labelStyle: TextStyle(color: Colors.black),
+                  border: InputBorder.none,
+                  labelStyle: TextStyle(color: Colors.grey, fontSize: 12),
                   labelText: "NAME",
                   prefixIcon: Icon(Icons.person_outline),
                   fillColor: Colors.grey[50],
@@ -105,17 +134,25 @@ class _RegisterPageState extends State<RegisterPage> {
                       primary: Colors.green,
                     )),
             child: TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
+              controller: _userReg,
+              onTap: () {
+                FocusScopeNode currentFocus = FocusScope.of(context);
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
                 }
-                return null;
               },
-              style: TextStyle(color: Colors.green),
+              focusNode: _isSelected2,
+              autofocus: true,
+              style: TextStyle(
+                  color: _isSelected2.hasFocus ? Colors.green : Colors.grey,
+                  fontWeight: FontWeight.w900),
               decoration: InputDecoration(
-                  labelStyle: TextStyle(color: Colors.black),
+                  border: InputBorder.none,
+                  labelStyle: TextStyle(color: Colors.grey, fontSize: 12),
                   labelText: "EMAIL",
-                  prefixIcon: Icon(Icons.email_outlined),
+                  prefixIcon: showErrorEmail
+                      ? Icon(Icons.error_outline, color: Colors.red)
+                      : Icon(Icons.email_outlined),
                   fillColor: Colors.grey[50],
                   filled: true,
                   enabledBorder: OutlineInputBorder(
@@ -132,17 +169,22 @@ class _RegisterPageState extends State<RegisterPage> {
                       primary: Colors.green,
                     )),
             child: TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
+              onTap: () {
+                FocusScopeNode currentFocus = FocusScope.of(context);
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
                 }
-                return null;
               },
+              focusNode: _isSelected3,
+              autofocus: true,
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              style: TextStyle(color: Colors.green),
+              style: TextStyle(
+                  color: _isSelected3.hasFocus ? Colors.green : Colors.grey,
+                  fontWeight: FontWeight.w900),
               decoration: InputDecoration(
-                  labelStyle: TextStyle(color: Colors.black),
+                  border: InputBorder.none,
+                  labelStyle: TextStyle(color: Colors.grey, fontSize: 12),
                   labelText: "PHONE",
                   prefixIcon: Icon(Icons.phone_android),
                   fillColor: Colors.grey[50],
@@ -154,23 +196,29 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(left: 30, right: 30, bottom: 30),
+          padding: EdgeInsets.only(left: 30, right: 30),
           child: Theme(
             data: Theme.of(context).copyWith(
                 colorScheme: ThemeData().colorScheme.copyWith(
                       primary: Colors.green,
                     )),
             child: TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
+              controller: _passReg,
+              onTap: () {
+                FocusScopeNode currentFocus = FocusScope.of(context);
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
                 }
-                return null;
               },
-              style: TextStyle(color: Colors.green),
+              focusNode: _isSelected4,
+              autofocus: true,
+              style: TextStyle(
+                  color: _isSelected4.hasFocus ? Colors.green : Colors.grey,
+                  fontWeight: FontWeight.w900),
               obscureText: !_visible,
               decoration: InputDecoration(
-                  labelStyle: TextStyle(color: Colors.black),
+                  border: InputBorder.none,
+                  labelStyle: TextStyle(color: Colors.grey, fontSize: 12),
                   labelText: "PASSWORD",
                   prefixIcon: IconButton(
                     icon: Icon(
@@ -190,24 +238,37 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
         ),
+        FlutterPwValidator(
+          controller: _passReg,
+          minLength: 6,
+          width: 300,
+          height: 30,
+          onSuccess: () {},
+          onFail: () {},
+        ),
         Padding(
-          padding: EdgeInsets.only(left: 30, right: 30, bottom: 50),
+          padding: EdgeInsets.only(left: 30, right: 30, bottom: 50, top: 10),
           child: Theme(
             data: Theme.of(context).copyWith(
                 colorScheme: ThemeData().colorScheme.copyWith(
                       primary: Colors.green,
                     )),
             child: TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
+              onTap: () {
+                FocusScopeNode currentFocus = FocusScope.of(context);
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
                 }
-                return null;
               },
-              style: TextStyle(color: Colors.green),
+              focusNode: _isSelected5,
+              autofocus: true,
+              style: TextStyle(
+                  color: _isSelected5.hasFocus ? Colors.green : Colors.grey,
+                  fontWeight: FontWeight.w900),
               obscureText: !_visibleConfirm,
               decoration: InputDecoration(
-                  labelStyle: TextStyle(color: Colors.black),
+                  border: InputBorder.none,
+                  labelStyle: TextStyle(color: Colors.grey, fontSize: 12),
                   labelText: "CONFIRM PASSWORD",
                   prefixIcon: IconButton(
                     icon: Icon(
