@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project_login/home.dart';
 import 'package:project_login/register.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -69,6 +70,12 @@ class _LoginPageState extends State<LoginPage> {
                         primary: Colors.green,
                       )),
               child: TextFormField(
+                validator: (value) {
+                  if (value != "admin@gmail.com") {
+                    return 'Please enter some text';
+                  }
+                  return null;
+                },
                 focusNode: _isSelected1,
                 controller: _user,
                 autofocus: true,
@@ -108,6 +115,12 @@ class _LoginPageState extends State<LoginPage> {
                         primary: Colors.green,
                       )),
               child: TextFormField(
+                validator: (value) {
+                  if (value != "admin") {
+                    return 'Please enter some text';
+                  }
+                  return null;
+                },
                 focusNode: _isSelected2,
                 controller: _pass,
                 autofocus: true,
@@ -186,8 +199,11 @@ class _LoginPageState extends State<LoginPage> {
           width: MediaQuery.of(context).size.width * 0.8,
           child: ElevatedButton(
             child: Text('LOGIN'),
-            onPressed: () {
+            onPressed: () async {
               if (_formKey.currentState!.validate()) {
+                SharedPreferences _prefs = await SharedPreferences.getInstance();
+                _prefs.setString('email', _user.text);
+                _prefs.setString('password', _pass.text);
                 Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(builder: (context) => HomePage()),
                     (Route<dynamic> route) => false);

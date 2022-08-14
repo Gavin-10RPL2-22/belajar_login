@@ -14,6 +14,7 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   TextEditingController _userReg = TextEditingController();
   TextEditingController _passReg = TextEditingController();
+  TextEditingController _confPass = TextEditingController();
   FocusNode _isSelected1 = FocusNode();
   FocusNode _isSelected2 = FocusNode();
   FocusNode _isSelected3 = FocusNode();
@@ -23,6 +24,7 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _visible = false;
   bool _visibleConfirm = false;
   bool showErrorEmail = false;
+  bool _showErrorPass = true;
 
   @override
   void initState() {
@@ -34,6 +36,13 @@ class _RegisterPageState extends State<RegisterPage> {
         showErrorEmail = true;
       }
       setState(() {});
+    });
+    _confPass.addListener(() {
+      if (_passReg.text == _confPass.text) {
+        _showErrorPass = false;
+      } else {
+        _showErrorPass = true;
+      }
     });
   }
 
@@ -93,6 +102,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   inputRegis() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: EdgeInsets.only(top: 30, left: 30, right: 30, bottom: 30),
@@ -238,22 +248,26 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
         ),
-        FlutterPwValidator(
-          controller: _passReg,
-          minLength: 6,
-          width: 300,
-          height: 30,
-          onSuccess: () {},
-          onFail: () {},
+        Padding(
+          padding: EdgeInsets.only(left: 40),
+          child: FlutterPwValidator(
+            controller: _passReg,
+            minLength: 6,
+            width: 300,
+            height: 30,
+            onSuccess: () {},
+            onFail: () {},
+          ),
         ),
         Padding(
-          padding: EdgeInsets.only(left: 30, right: 30, bottom: 50, top: 10),
+          padding: EdgeInsets.only(left: 30, right: 30, top: 20),
           child: Theme(
             data: Theme.of(context).copyWith(
                 colorScheme: ThemeData().colorScheme.copyWith(
                       primary: Colors.green,
                     )),
             child: TextFormField(
+              controller: _confPass,
               onTap: () {
                 FocusScopeNode currentFocus = FocusScope.of(context);
                 if (!currentFocus.hasPrimaryFocus) {
@@ -288,6 +302,13 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
         ),
+        _showErrorPass
+            ? Padding(
+                padding: EdgeInsets.only(left: 40, bottom: 50),
+                child: Text("Password didn't match",
+                    style: TextStyle(color: Colors.red, fontSize: 13)),
+              )
+            : Container(),
       ],
     );
   }
