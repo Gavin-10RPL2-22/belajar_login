@@ -201,7 +201,8 @@ class _LoginPageState extends State<LoginPage> {
             child: Text('LOGIN'),
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
-                SharedPreferences _prefs = await SharedPreferences.getInstance();
+                SharedPreferences _prefs =
+                    await SharedPreferences.getInstance();
                 _prefs.setString('email', _user.text);
                 _prefs.setString('password', _pass.text);
                 Navigator.of(context).pushAndRemoveUntil(
